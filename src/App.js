@@ -1,22 +1,37 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import $ from 'jquery'
+window.$ = $
+
+const API_SERVER = 'http://localhost:5000'
 
 export default class App extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
       email: '',
       name: '',
       skills: '',
-      wants: ''
-    };
+      wants: '',
+      submitted: false
+    }
   }
 
   handleInputChange(input, value) {
-    this.setState({[input]: value}); 
+    this.setState({[input]: value})
   }
 
   submit() {
     console.log('submitting', this.state)
+    const signup_data = {
+        'email': this.state.email, 
+        'name': this.state.name, 
+        'skills': this.state.skills, 
+        'wants': this.state.wants
+    }
+    $.post(`${API_SERVER}/signup`, signup_data, (result) => {
+        console.log('result', result)
+        this.setState({submitted: true})
+    })
   }
 
   render() {
@@ -47,8 +62,12 @@ export default class App extends Component {
         <button onClick={() => this.submit()}>
           Sign Up
         </button>
+        {
+            this.state.submitted ? 'Thanks for submitting!' : ''
+        }
+
       </div>
-    );
+    )
   }
 }
 
